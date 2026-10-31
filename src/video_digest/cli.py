@@ -142,7 +142,7 @@ def step1_fetch_metadata_and_subtitles(url, out_dir, cookies_path=None):
 
     cmd = [
         "yt-dlp", "--no-playlist", "--dump-json", "--skip-download",
-        "--write-subs", "--sub-lang", "zh-CN,zh-Hans,zh,ai-zh,en",
+        "--write-subs", "--write-auto-subs", "--sub-lang", "zh-CN,zh-Hans,zh,ai-zh,en,en-orig,en-US",
         "-o", str(out_dir / "sub"), url
     ]
     if cookies_path and Path(cookies_path).exists():
@@ -173,7 +173,7 @@ def step1_fetch_metadata_and_subtitles(url, out_dir, cookies_path=None):
         raise VideoUnavailableError(f"无法获取有效视频流，请检查链接或网络: {stderr[:150]}")
 
     has_sub = False
-    sub_priority = ["zh-CN", "zh-Hans", "zh", "ai-zh", "en"]
+    sub_priority = ["zh-CN", "zh-Hans", "zh", "ai-zh", "en", "en-orig", "en-US"]
     candidate_files = set(list(out_dir.glob("sub*")) + list(out_dir.glob("*.vtt")) + list(out_dir.glob("*.srt")))
 
     selected_sub = None
@@ -277,13 +277,18 @@ def step3_extract_visual_evidence(url, out_dir, duration, cookies_path=None):
         video_path = Path(url)
     else:
         video_path = out_dir / "video_360p.mp4"
-        cmd = ["yt-dlp", "--no-playlist", "-f", "100046/30011/bv*[height<=360]+ba/b[height<=360]/best", "-o", str(video_path), url]
+        cmd = ["yt-dlp", "--no-playlist", "-f", "100046/30011/bv*[height<=360]+ba/b[height<=360]/best", "--merge-output-format", "mp4", "-o", str(video_path), url]
         if cookies_path and Path(cookies_path).exists():
             cmd.extend(["--cookies", str(cookies_path)])
         elif Path("cookies.txt").exists():
             cmd.extend(["--cookies", "cookies.txt"])
         code, _, _ = run_cmd(cmd, timeout=60)
-        if code != 0 or not video_path.exists() or video_path.stat().st_size < 1024 * 1024:
+        if not video_path.exists():
+            # 兼容 yt-dlp 自动追加扩展名（如 .webm, .mkv）
+            candidates = list(out_dir.glob("video_360p.*"))
+            if candidates:
+                video_path = candidates[0]
+        if code != 0 or not video_path.exists() or video_path.stat().st_size < 100 * 1024:
             print(" -> [提示] 未获取到视频画面流，降级为纯文本总结")
             return [], {}, None
 
@@ -546,6 +551,8 @@ def process_video(url, output_dir=None, cookies_path=None, api_key=None, base_ur
         for heavy in [out_dir / "video_360p.mp4", out_dir / "audio.m4a", out_dir / "batch_ocr_task.json"]:
             if heavy.exists():
                 heavy.unlink(missing_ok=True)
+        for gen_vid in out_dir.glob("video_360p.*"):
+            gen_vid.unlink(missing_ok=True)
         shutil.rmtree(out_dir / "evidence_frames", ignore_errors=True)
 
 def main():
