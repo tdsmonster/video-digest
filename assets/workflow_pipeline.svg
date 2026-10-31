@@ -1,170 +1,295 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" width="100%" height="100%">
   <defs>
-    <!-- 渐变定义 -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#020617" />
+    <!-- 基础背景渐变 -->
+    <linearGradient id="canvasBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="50%" stop-color="#0d1424" />
+      <stop offset="100%" stop-color="#050811" />
     </linearGradient>
-    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#06b6d4" />
-      <stop offset="100%" stop-color="#3b82f6" />
+
+    <!-- 卡片质感渐变 -->
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.95" />
     </linearGradient>
-    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#8b5cf6" />
-      <stop offset="100%" stop-color="#ec4899" />
+    <linearGradient id="innerNodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
     </linearGradient>
-    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#f59e0b" />
-      <stop offset="100%" stop-color="#10b981" />
+
+    <!-- 主题流光色 -->
+    <linearGradient id="blueGlowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#2563eb" />
     </linearGradient>
-    
-    <!-- 滤镜与阴影 -->
-    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45" />
+    <linearGradient id="purpleGlowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <linearGradient id="cyanGlowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#0891b2" />
+    </linearGradient>
+    <linearGradient id="emeraldGlowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- 发光滤镜与深度投影 -->
+    <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.65" />
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#38bdf8" flood-opacity="0.08" />
     </filter>
-    <filter id="cyanGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#06b6d4" flood-opacity="0.5" />
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-    
+
     <!-- 箭头标记 -->
-    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+    <marker id="arrowDefault" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
     </marker>
-    <marker id="arrowCyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06b6d4" />
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#c084fc" />
+    </marker>
+    <marker id="arrowCyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#22d3ee" />
     </marker>
   </defs>
 
-  <!-- 背景底色与科技网格 -->
-  <rect width="960" height="440" rx="16" fill="url(#bgGrad)" />
-  <g opacity="0.05" stroke="#ffffff" stroke-width="1">
-    <path d="M 0,55 L 960,55 M 0,110 L 960,110 M 0,165 L 960,165 M 0,220 L 960,220 M 0,275 L 960,275 M 0,330 L 960,330 M 0,385 L 960,385" />
-    <path d="M 120,0 L 120,440 M 240,0 L 240,440 M 360,0 L 360,440 M 480,0 L 480,440 M 600,0 L 600,440 M 720,0 L 720,440 M 840,0 L 840,440" />
+  <style>
+    .font-sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    .font-mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+  </style>
+
+  <!-- 主画布背景 -->
+  <rect width="1180" height="620" rx="20" fill="url(#canvasBg)" stroke="#1e293b" stroke-width="1.5" />
+
+  <!-- 科技感背景点阵与网格 -->
+  <g opacity="0.1" stroke="#38bdf8" stroke-width="0.8">
+    <path d="M 0,70 L 1180,70 M 0,140 L 1180,140 M 0,210 L 1180,210 M 0,280 L 1180,280 M 0,350 L 1180,350 M 0,420 L 1180,420 M 0,490 L 1180,490 M 0,560 L 1180,560" />
+    <path d="M 90,0 L 90,620 M 180,0 L 180,620 M 270,0 L 270,620 M 360,0 L 360,620 M 450,0 L 450,620 M 540,0 L 540,620 M 630,0 L 630,620 M 720,0 L 720,620 M 810,0 L 810,620 M 900,0 L 900,620 M 990,0 L 990,620 M 1080,0 L 1080,620" />
   </g>
 
-  <!-- 顶部标题栏 -->
-  <text x="40" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#f8fafc" letter-spacing="0.5">
-    Video-Digest <tspan font-weight="400" font-size="14" fill="#94a3b8">| 音画双模态执行流程架构图 (Pipeline Workflow)</tspan>
-  </text>
+  <!-- 顶部标题与系统态势 -->
+  <g transform="translate(48, 48)">
+    <circle cx="6" cy="6" r="6" fill="#38bdf8" opacity="0.8" filter="url(#softGlow)" />
+    <text x="24" y="11" class="font-sans" font-size="20" font-weight="800" fill="#f8fafc" letter-spacing="0.5">
+      VIDEO-DIGEST <tspan font-weight="400" font-size="14" fill="#94a3b8">| 端侧音画双模态执行架构图 (Architecture Pipeline)</tspan>
+    </text>
+    <rect x="910" y="-8" width="170" height="28" rx="14" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="924" cy="6" r="4" fill="#10b981" />
+    <text x="936" y="10" class="font-mono" font-size="11" font-weight="600" fill="#94a3b8">STANDALONE CLI</text>
+  </g>
 
-  <!-- ======================== 阶段 1: 输入与字幕嗅探 ======================== -->
-  <g transform="translate(40, 75)">
-    <!-- 卡片背景 -->
-    <rect width="200" height="315" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)" />
-    <!-- 阶段标签 -->
-    <rect x="0" y="0" width="200" height="36" rx="12" fill="#0f172a" />
-    <rect x="14" y="11" width="14" height="14" rx="3" fill="#3b82f6" />
-    <text x="36" y="23" font-family="-apple-system, sans-serif" font-size="13" font-weight="600" fill="#e2e8f0">1. 输入与字幕探测</text>
+  <!-- ======================== 阶段 1: 多源输入与字幕嗅探 ======================== -->
+  <g transform="translate(48, 96)">
+    <rect width="250" height="460" rx="14" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="1.2" stroke-opacity="0.4" filter="url(#cardShadow)" />
     
-    <!-- 内容节点 1 -->
-    <rect x="16" y="55" width="168" height="64" rx="8" fill="#0f172a" stroke="#1e293b" />
-    <text x="26" y="77" font-family="-apple-system, sans-serif" font-size="12" font-weight="600" fill="#38bdf8">在线视频 / 本地媒体</text>
-    <text x="26" y="96" font-family="-apple-system, sans-serif" font-size="10.5" fill="#94a3b8">B站 BV号 / 链接 / 本地MP4</text>
-    <text x="26" y="109" font-family="-apple-system, sans-serif" font-size="9.5" fill="#64748b">支持 --cookies 凭证挂载</text>
+    <!-- 阶段 Header -->
+    <rect x="0" y="0" width="250" height="44" rx="14" fill="#0f172a" fill-opacity="0.9" />
+    <rect x="18" y="14" width="6" height="16" rx="2" fill="url(#blueGlowGrad)" />
+    <text x="32" y="26" class="font-sans" font-size="13" font-weight="700" fill="#f1f5f9">01 / 输入与字幕感知</text>
+    <text x="186" y="26" class="font-mono" font-size="10.5" fill="#38bdf8">INTAKE</text>
 
-    <!-- 分支选择 -->
-    <path d="M 100,119 L 100,140" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)" />
+    <!-- Node 1: 输入源 -->
+    <g transform="translate(16, 60)">
+      <rect width="218" height="90" rx="10" fill="url(#innerNodeGrad)" stroke="#334155" stroke-width="1" />
+      <text x="16" y="26" class="font-sans" font-size="12" font-weight="700" fill="#38bdf8">多模态视频输入源</text>
+      <text x="16" y="47" class="font-sans" font-size="10.5" fill="#cbd5e1">B站 BV号 • 在线视频URL</text>
+      <text x="16" y="64" class="font-sans" font-size="10.5" fill="#cbd5e1">本地文件: MP4 / MKV / MOV</text>
+      <rect x="16" y="72" width="132" height="12" rx="3" fill="#1e293b" />
+      <text x="20" y="81" class="font-mono" font-size="8.5" fill="#64748b">--cookies / no_proxy 直连</text>
+    </g>
 
-    <rect x="16" y="145" width="168" height="58" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1" />
-    <text x="26" y="167" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#34d399">✓ 官方字幕探测</text>
-    <text x="26" y="184" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">匹配 zh-CN / ai-zh / en</text>
-    <text x="26" y="196" font-family="-apple-system, sans-serif" font-size="9" fill="#059669">0 算力秒级转为 transcript.srt</text>
+    <!-- 流程连线 -->
+    <path d="M 125,150 L 125,180" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDefault)" />
 
-    <rect x="16" y="222" width="168" height="52" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1" />
-    <text x="26" y="242" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#fbbf24">✗ 无字幕流探测</text>
-    <text x="26" y="259" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">触发音频分离与离线 ASR</text>
+    <!-- Node 2: 官方原生字幕探测 -->
+    <g transform="translate(16, 185)">
+      <rect width="218" height="105" rx="10" fill="url(#innerNodeGrad)" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.8" />
+      <rect x="12" y="12" width="12" height="12" rx="3" fill="#10b981" />
+      <text x="30" y="23" class="font-sans" font-size="11.5" font-weight="700" fill="#34d399">官方优先字幕流</text>
+      <text x="16" y="46" class="font-sans" font-size="10" fill="#94a3b8">语言探测: zh-CN &gt; ai-zh &gt; en</text>
+      <text x="16" y="63" class="font-sans" font-size="10" fill="#cbd5e1">VTT / JSON 自动转写清洗</text>
+      <line x1="16" y1="73" x2="202" y2="73" stroke="#1e293b" stroke-width="1" />
+      <text x="16" y="90" class="font-mono" font-size="9" font-weight="600" fill="#10b981">命中即直通 (0 本地算力/0延迟)</text>
+    </g>
 
-    <text x="16" y="300" font-family="-apple-system, sans-serif" font-size="9.5" fill="#64748b">⚡ 提取 ffprobe 时长与元数据</text>
+    <!-- 流程连线 -->
+    <path d="M 125,290 L 125,320" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDefault)" />
+
+    <!-- Node 3: 缺失降级 -->
+    <g transform="translate(16, 325)">
+      <rect width="218" height="95" rx="10" fill="url(#innerNodeGrad)" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,3" />
+      <text x="16" y="24" class="font-sans" font-size="11.5" font-weight="700" fill="#fbbf24">无官方字幕 (降级分流)</text>
+      <text x="16" y="44" class="font-sans" font-size="10" fill="#94a3b8">yt-dlp 抽取最佳 m4a 音频切片</text>
+      <text x="16" y="61" class="font-sans" font-size="10" fill="#cbd5e1">本地媒体: ffmpeg -vn -acodec</text>
+      <text x="16" y="80" class="font-mono" font-size="9" fill="#f59e0b">触发离线 ASR 语音模型轨道 ➔</text>
+    </g>
+
+    <text x="16" y="445" class="font-mono" font-size="9" fill="#475569">PROBE: ffprobe duration validation</text>
   </g>
 
-  <!-- 连接箭头 1 -> 2 (双轨并发) -->
-  <path d="M 240,248 L 275,185" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrowCyan)" />
-  <path d="M 240,174 L 275,174" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
-  <path d="M 240,107 L 260,107 L 260,305 L 275,305" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+  <!-- 阶段 1 ➔ 2 连线 (双轨并行) -->
+  <path d="M 298,375 C 315,375 320,240 338,240" stroke="#c084fc" stroke-width="2" fill="none" marker-end="url(#arrowPurple)" />
+  <path d="M 298,235 C 315,235 320,235 338,235" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" fill="none" marker-end="url(#arrowDefault)" />
+  <path d="M 298,105 C 325,105 325,380 338,380" stroke="#22d3ee" stroke-width="2" fill="none" marker-end="url(#arrowCyan)" />
 
   <!-- ======================== 阶段 2: 音画双轨离线提取 ======================== -->
-  <g transform="translate(280, 75)">
-    <rect width="200" height="315" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)" />
-    <rect x="0" y="0" width="200" height="36" rx="12" fill="#0f172a" />
-    <rect x="14" y="11" width="14" height="14" rx="3" fill="#8b5cf6" />
-    <text x="36" y="23" font-family="-apple-system, sans-serif" font-size="13" font-weight="600" fill="#e2e8f0">2. 音画双轨处理</text>
+  <g transform="translate(345, 96)">
+    <rect width="260" height="460" rx="14" fill="url(#cardGrad)" stroke="#8b5cf6" stroke-width="1.2" stroke-opacity="0.4" filter="url(#cardShadow)" />
+    
+    <rect x="0" y="0" width="260" height="44" rx="14" fill="#0f172a" fill-opacity="0.9" />
+    <rect x="18" y="14" width="6" height="16" rx="2" fill="url(#purpleGlowGrad)" />
+    <text x="32" y="26" class="font-sans" font-size="13" font-weight="700" fill="#f1f5f9">02 / 音画双模态提取</text>
+    <text x="175" y="26" class="font-mono" font-size="10.5" fill="#c084fc">DUAL-TRACK</text>
 
-    <!-- 语音轨 -->
-    <rect x="14" y="48" width="172" height="105" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1" />
-    <text x="24" y="68" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600" fill="#c084fc">🎙️ 语音转写轨 (ASR)</text>
-    <text x="24" y="86" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• macOS: MLX-Whisper (Metal)</text>
-    <text x="24" y="101" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• 跨平台: whisper-cli / cpp</text>
-    <text x="24" y="116" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• 兜底: 系统 whisper 命令行</text>
-    <text x="24" y="138" font-family="-apple-system, sans-serif" font-size="9" fill="#a855f7">产出: transcript.srt 时间轴台词</text>
+    <!-- 轨道 A: 语音识别 -->
+    <g transform="translate(16, 56)">
+      <rect width="228" height="150" rx="10" fill="url(#innerNodeGrad)" stroke="#8b5cf6" stroke-width="1.2" />
+      <rect x="14" y="12" width="12" height="12" rx="3" fill="#8b5cf6" />
+      <text x="32" y="23" class="font-sans" font-size="12" font-weight="700" fill="#c084fc">🎙️ 语音转写轨 (ASR)</text>
+      
+      <rect x="14" y="38" width="200" height="42" rx="6" fill="#1e293b" fill-opacity="0.6" />
+      <text x="22" y="54" class="font-sans" font-size="10" font-weight="600" fill="#e2e8f0">macOS Apple Silicon (Metal)</text>
+      <text x="22" y="70" class="font-mono" font-size="9" fill="#a855f7">MLX-Whisper (large-v3-turbo)</text>
 
-    <!-- 画面轨 -->
-    <rect x="14" y="165" width="172" height="135" rx="8" fill="#0f172a" stroke="#06b6d4" stroke-width="1" />
-    <text x="24" y="185" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600" fill="#22d3ee">🖼️ 画面证据轨 (OCR)</text>
-    <text x="24" y="203" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• ffmpeg 物理抽 16 帧 (mpdecimate)</text>
-    <text x="24" y="218" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• macOS: 原生 Vision ANE</text>
-    <text x="24" y="233" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• 跨平台: RapidOCR (CPU)</text>
-    <text x="24" y="248" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• 过滤关注/点赞等水印噪点</text>
-    <text x="24" y="272" font-family="-apple-system, sans-serif" font-size="9" fill="#06b6d4">产出: 4x4 拼图 + 关键帧硬文字</text>
+      <rect x="14" y="86" width="200" height="42" rx="6" fill="#1e293b" fill-opacity="0.6" />
+      <text x="22" y="102" class="font-sans" font-size="10" font-weight="600" fill="#e2e8f0">Linux / Windows (通用兜底)</text>
+      <text x="22" y="118" class="font-mono" font-size="9" fill="#94a3b8">whisper-cli / 系统原生 whisper</text>
+
+      <text x="14" y="142" class="font-mono" font-size="8.5" fill="#10b981">✓ 幻觉消除: 连续复读与幽灵短语过滤</text>
+    </g>
+
+    <!-- 轨道 B: 画面视觉抽取 -->
+    <g transform="translate(16, 222)">
+      <rect width="228" height="195" rx="10" fill="url(#innerNodeGrad)" stroke="#06b6d4" stroke-width="1.2" />
+      <rect x="14" y="12" width="12" height="12" rx="3" fill="#06b6d4" />
+      <text x="32" y="23" class="font-sans" font-size="12" font-weight="700" fill="#22d3ee">🖼️ 画面证据轨 (Vision)</text>
+      
+      <text x="14" y="46" class="font-sans" font-size="10" fill="#cbd5e1">1. ffmpeg 动态采样与物理帧差去重</text>
+      <text x="24" y="60" class="font-mono" font-size="9" fill="#06b6d4">-vf "fps=1/{sample},mpdecimate"</text>
+      <text x="14" y="78" class="font-sans" font-size="10" fill="#cbd5e1">2. 严格收敛 16 张核心关键帧</text>
+
+      <rect x="14" y="88" width="200" height="64" rx="6" fill="#1e293b" fill-opacity="0.6" />
+      <text x="22" y="104" class="font-sans" font-size="10" font-weight="600" fill="#e2e8f0">原生 ANE 硬件 OCR (Mac)</text>
+      <text x="22" y="118" class="font-mono" font-size="8.5" fill="#38bdf8">mac_vision.swift 自动编译/Zero-Dep</text>
+      <text x="22" y="132" class="font-sans" font-size="9" fill="#94a3b8">非 Mac 跨平台: RapidOCR (CPU优先)</text>
+      <text x="22" y="145" class="font-sans" font-size="8.5" fill="#64748b">过滤水印/点赞/投币等视觉噪点</text>
+
+      <text x="14" y="172" class="font-mono" font-size="9" fill="#22d3ee">3. 合成 4×4 分镜印相大图 (tile)</text>
+      <text x="14" y="188" class="font-mono" font-size="8.5" fill="#10b981">✓ 产出: contact_sheet.jpg + OCR硬文本</text>
+    </g>
+
+    <text x="16" y="445" class="font-mono" font-size="9" fill="#475569">LOCAL ENGINE: 0 Cloud Transmission</text>
   </g>
 
-  <!-- 连接箭头 2 -> 3 -->
-  <path d="M 480,105 L 515,145" stroke="#c084fc" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
-  <path d="M 480,240 L 515,200" stroke="#22d3ee" stroke-width="1.5" fill="none" marker-end="url(#arrow)" />
+  <!-- 阶段 2 ➔ 3 连线 (汇聚推理) -->
+  <path d="M 605,130 C 625,130 630,220 648,220" stroke="#c084fc" stroke-width="2" fill="none" marker-end="url(#arrowDefault)" />
+  <path d="M 605,320 C 625,320 630,240 648,240" stroke="#06b6d4" stroke-width="2" fill="none" marker-end="url(#arrowDefault)" />
 
-  <!-- ======================== 阶段 3: 归纳与模型推理 ======================== -->
-  <g transform="translate(520, 75)">
-    <rect width="200" height="315" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)" />
-    <rect x="0" y="0" width="200" height="36" rx="12" fill="#0f172a" />
-    <rect x="14" y="11" width="14" height="14" rx="3" fill="#06b6d4" />
-    <text x="36" y="23" font-family="-apple-system, sans-serif" font-size="13" font-weight="600" fill="#e2e8f0">3. 提炼与模型归纳</text>
+  <!-- ======================== 阶段 3: 归纳与防截断保护 ======================== -->
+  <g transform="translate(655, 96)">
+    <rect width="250" height="460" rx="14" fill="url(#cardGrad)" stroke="#06b6d4" stroke-width="1.2" stroke-opacity="0.4" filter="url(#cardShadow)" />
+    
+    <rect x="0" y="0" width="250" height="44" rx="14" fill="#0f172a" fill-opacity="0.9" />
+    <rect x="18" y="14" width="6" height="16" rx="2" fill="url(#cyanGlowGrad)" />
+    <text x="32" y="26" class="font-sans" font-size="13" font-weight="700" fill="#f1f5f9">03 / 提炼与模型归纳</text>
+    <text x="175" y="26" class="font-mono" font-size="10.5" fill="#22d3ee">SYNTHESIS</text>
 
-    <!-- 防截断保护 -->
-    <rect x="14" y="48" width="172" height="78" rx="8" fill="#0f172a" stroke="#1e293b" />
-    <text x="24" y="68" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600" fill="#38bdf8">🛡️ 长文本防截断机制</text>
-    <text x="24" y="86" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">字数 &gt; 25,000 字自动激活</text>
-    <text x="24" y="101" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">Map-Reduce 分段并行提取</text>
-    <text x="24" y="116" font-family="-apple-system, sans-serif" font-size="9" fill="#0284c7">消灭 API max_tokens 硬截断</text>
+    <!-- 机制 1: 文本防截断 -->
+    <g transform="translate(16, 60)">
+      <rect width="218" height="115" rx="10" fill="url(#innerNodeGrad)" stroke="#38bdf8" stroke-width="1" />
+      <text x="16" y="24" class="font-sans" font-size="12" font-weight="700" fill="#38bdf8">🛡️ 长剧本 Map-Reduce 防护</text>
+      <text x="16" y="45" class="font-sans" font-size="10" fill="#94a3b8">文本阈值 &gt; 25,000 字自动触发</text>
+      <rect x="16" y="55" width="186" height="32" rx="4" fill="#1e293b" />
+      <text x="24" y="69" class="font-mono" font-size="9" fill="#e2e8f0">4000字窗口分段并行提炼</text>
+      <text x="24" y="81" class="font-mono" font-size="8.5" fill="#38bdf8">消灭 API max_tokens 硬腰斩</text>
+      <text x="16" y="105" class="font-mono" font-size="8.5" fill="#10b981">✓ 保证片尾最终结论 100% 完整保留</text>
+    </g>
 
-    <!-- LLM 推理端点 -->
-    <rect x="14" y="138" width="172" height="110" rx="8" fill="#0f172a" stroke="#06b6d4" stroke-width="1" />
-    <text x="24" y="158" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600" fill="#22d3ee">🧠 通用 LLM 接口</text>
-    <text x="24" y="176" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• DeepSeek / OpenAI 兼容</text>
-    <text x="24" y="191" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• 本地 Ollama / vLLM 端点</text>
-    <text x="24" y="206" font-family="-apple-system, sans-serif" font-size="10" fill="#94a3b8">• 单轮结构化输出指令</text>
-    <text x="24" y="235" font-family="-apple-system, sans-serif" font-size="9" fill="#06b6d4">音画互证 + 结论强制收口</text>
+    <!-- 流程连线 -->
+    <path d="M 125,175 L 125,200" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowDefault)" />
 
-    <text x="14" y="280" font-family="-apple-system, sans-serif" font-size="9.5" fill="#64748b">🧹 过程切片物理销毁 (finally)</text>
-    <text x="14" y="295" font-family="-apple-system, sans-serif" font-size="9" fill="#475569">临时 mp4 / m4a / 散图 100% 清空</text>
+    <!-- 机制 2: 标准化推理 -->
+    <g transform="translate(16, 205)">
+      <rect width="218" height="145" rx="10" fill="url(#innerNodeGrad)" stroke="#06b6d4" stroke-width="1.2" />
+      <text x="16" y="24" class="font-sans" font-size="12" font-weight="700" fill="#22d3ee">🧠 通用 LLM 接口规范</text>
+      <text x="16" y="44" class="font-sans" font-size="10" fill="#cbd5e1">• 标准 OpenAI 兼容 REST 端点</text>
+      <text x="16" y="60" class="font-sans" font-size="10" fill="#cbd5e1">• DeepSeek / GPT-4o / Ollama</text>
+      <text x="16" y="76" class="font-sans" font-size="10" fill="#cbd5e1">• 环境变量: OPENAI_API_KEY</text>
+      
+      <rect x="16" y="88" width="186" height="45" rx="4" fill="#0f172a" stroke="#1e293b" />
+      <text x="22" y="103" class="font-sans" font-size="9.5" font-weight="600" fill="#38bdf8">单轮双轨隔离输出规范</text>
+      <text x="22" y="117" class="font-mono" font-size="8.5" fill="#94a3b8">&lt;&lt;&lt;SUMMARY_CARD&gt;&gt;&gt;</text>
+      <text x="22" y="128" class="font-mono" font-size="8.5" fill="#94a3b8">&lt;&lt;&lt;FULL_REPORT&gt;&gt;&gt;</text>
+    </g>
+
+    <!-- 机制 3: 磁盘安全清理 -->
+    <g transform="translate(16, 360)">
+      <rect width="218" height="60" rx="8" fill="#0f172a" stroke="#334155" stroke-dasharray="2,2" />
+      <text x="14" y="22" class="font-sans" font-size="10.5" font-weight="600" fill="#cbd5e1">🧹 过程切片物理自愈 (finally)</text>
+      <text x="14" y="38" class="font-sans" font-size="9" fill="#94a3b8">即刻销毁 MP4、M4A 与散帧临时图</text>
+      <text x="14" y="50" class="font-mono" font-size="8.5" fill="#10b981">单任务产物严格控制 &lt; 2MB</text>
+    </g>
+
+    <text x="16" y="445" class="font-mono" font-size="9" fill="#475569">ZERO RESIDUE: Auto-cleaning on exit</text>
   </g>
 
-  <!-- 连接箭头 3 -> 4 -->
-  <path d="M 720,195 L 755,195" stroke="#06b6d4" stroke-width="1.8" fill="none" marker-end="url(#arrowCyan)" />
+  <!-- 阶段 3 ➔ 4 连线 -->
+  <path d="M 905,275 L 940,275" stroke="#22d3ee" stroke-width="2.5" fill="none" marker-end="url(#arrowCyan)" />
 
   <!-- ======================== 阶段 4: 双轨物理产物 ======================== -->
-  <g transform="translate(760, 75)">
-    <rect width="160" height="315" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1.2" filter="url(#cardShadow)" />
-    <rect x="0" y="0" width="160" height="36" rx="12" fill="#0f172a" />
-    <rect x="14" y="11" width="14" height="14" rx="3" fill="#10b981" />
-    <text x="36" y="23" font-family="-apple-system, sans-serif" font-size="13" font-weight="600" fill="#e2e8f0">4. 双轨产出</text>
+  <g transform="translate(945, 96)">
+    <rect width="185" height="460" rx="14" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.2" stroke-opacity="0.4" filter="url(#cardShadow)" />
+    
+    <rect x="0" y="0" width="185" height="44" rx="14" fill="#0f172a" fill-opacity="0.9" />
+    <rect x="18" y="14" width="6" height="16" rx="2" fill="url(#emeraldGlowGrad)" />
+    <text x="32" y="26" class="font-sans" font-size="13" font-weight="700" fill="#f1f5f9">04 / 物理交付物</text>
+    <text x="130" y="26" class="font-mono" font-size="10.5" fill="#34d399">OUTPUT</text>
 
-    <!-- 卡片 1 -->
-    <rect x="12" y="48" width="136" height="72" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1" />
-    <text x="20" y="68" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#34d399">📱 summary.txt</text>
-    <text x="20" y="85" font-family="-apple-system, sans-serif" font-size="9.5" fill="#94a3b8">500字极简速览卡片</text>
-    <text x="20" y="100" font-family="-apple-system, sans-serif" font-size="9" fill="#64748b">定性 + 时间戳转折 + 启示</text>
+    <!-- 产物 1 -->
+    <g transform="translate(14, 60)">
+      <rect width="157" height="85" rx="8" fill="url(#innerNodeGrad)" stroke="#10b981" stroke-width="1" />
+      <text x="12" y="22" class="font-sans" font-size="11" font-weight="700" fill="#34d399">📱 summary.txt</text>
+      <text x="12" y="40" class="font-sans" font-size="9.5" fill="#e2e8f0">500字极简手机卡片</text>
+      <text x="12" y="56" class="font-sans" font-size="9" fill="#94a3b8">• 一句话核心定性</text>
+      <text x="12" y="70" class="font-sans" font-size="9" fill="#94a3b8">• 3个时间戳冲突看点</text>
+      <text x="12" y="80" class="font-sans" font-size="8.5" fill="#64748b">• 核心启发与结论</text>
+    </g>
 
-    <!-- 卡片 2 -->
-    <rect x="12" y="130" width="136" height="72" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1" />
-    <text x="20" y="150" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#38bdf8">📄 report.md</text>
-    <text x="20" y="167" font-family="-apple-system, sans-serif" font-size="9.5" fill="#94a3b8">高保真全景整理笔记</text>
-    <text x="20" y="182" font-family="-apple-system, sans-serif" font-size="9" fill="#64748b">时间线 + 音画证据 + 总结</text>
+    <!-- 产物 2 -->
+    <g transform="translate(14, 155)">
+      <rect width="157" height="95" rx="8" fill="url(#innerNodeGrad)" stroke="#38bdf8" stroke-width="1" />
+      <text x="12" y="22" class="font-sans" font-size="11" font-weight="700" fill="#38bdf8">📄 report.md</text>
+      <text x="12" y="40" class="font-sans" font-size="9.5" fill="#e2e8f0">高保真全景笔记</text>
+      <text x="12" y="56" class="font-sans" font-size="9" fill="#94a3b8">• 全景时间线推进</text>
+      <text x="12" y="70" class="font-sans" font-size="9" fill="#94a3b8">• 画面代码/参数印证</text>
+      <text x="12" y="84" class="font-sans" font-size="9" fill="#94a3b8">• 深度洞察与总结</text>
+    </g>
 
-    <!-- 卡片 3 -->
-    <rect x="12" y="212" width="136" height="72" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1" />
-    <text x="20" y="232" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" fill="#fbbf24">🖼️ contact_sheet</text>
-    <text x="20" y="249" font-family="-apple-system, sans-serif" font-size="9.5" fill="#94a3b8">4×4 分镜印相大图</text>
-    <text x="20" y="264" font-family="-apple-system, sans-serif" font-size="9" fill="#64748b">长视频视觉脉络一眼看透</text>
+    <!-- 产物 3 -->
+    <g transform="translate(14, 260)">
+      <rect width="157" height="85" rx="8" fill="url(#innerNodeGrad)" stroke="#fbbf24" stroke-width="1" />
+      <text x="12" y="22" class="font-sans" font-size="11" font-weight="700" fill="#fbbf24">🖼️ contact_sheet.jpg</text>
+      <text x="12" y="40" class="font-sans" font-size="9.5" fill="#e2e8f0">4×4 关键帧分镜大图</text>
+      <text x="12" y="56" class="font-sans" font-size="9" fill="#94a3b8">一眼看透长视频视觉走向</text>
+      <text x="12" y="72" class="font-sans" font-size="9" fill="#64748b">直观印证台词上下文</text>
+    </g>
 
-    <text x="14" y="302" font-family="-apple-system, sans-serif" font-size="9" fill="#10b981">✨ 单次产物 &lt; 2MB</text>
+    <!-- 产物 4 -->
+    <g transform="translate(14, 355)">
+      <rect width="157" height="60" rx="8" fill="url(#innerNodeGrad)" stroke="#64748b" stroke-width="0.8" />
+      <text x="12" y="20" class="font-sans" font-size="10.5" font-weight="600" fill="#cbd5e1">⏱️ transcript.srt</text>
+      <text x="12" y="36" class="font-sans" font-size="9" fill="#94a3b8">全量精确时间戳字幕</text>
+      <text x="12" y="50" class="font-mono" font-size="8.5" fill="#10b981">可直接导入剪辑/播放器</text>
+    </g>
+
+    <text x="14" y="445" class="font-mono" font-size="9" fill="#10b981">DELIVER: 4 Artifacts Ready</text>
   </g>
+
 </svg>
