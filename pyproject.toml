@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "video-digest"
+version = "0.1.0"
+description = "A lightweight video summarizer CLI that combines audio transcripts with visual OCR."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "tdsmonster" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia :: Video",
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+mlx = ["mlx-whisper"]
+ocr = ["rapidocr-onnxruntime"]
+
+[project.scripts]
+video-digest = "video_digest.cli:main"
+
+[tool.setuptools.package-data]
+"video_digest" = ["vision/*.swift", "vision/mac-vision"]
