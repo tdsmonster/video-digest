@@ -24,8 +24,8 @@
   <g font-family="-apple-system, 'SF Pro Display', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
     <text x="80" y="132" font-size="72" font-weight="800" fill="#f8fafc" letter-spacing="-1.5">video<tspan fill="url(#accent)">-</tspan>digest</text>
     <rect x="82" y="156" width="112" height="5" rx="2.5" fill="url(#accent)"/>
-    <text x="80" y="212" font-size="30" font-weight="600" fill="#e2e8f0">Video → evidence-grounded AI summary</text>
-    <text x="80" y="252" font-size="19" fill="#94a3b8">No evidence, no summary · Bilibili · YouTube · local files</text>
+    <text x="80" y="212" font-size="25" font-weight="600" fill="#e2e8f0">Video → AI summary from subtitles &amp; screen text</text>
+    <text x="80" y="252" font-size="19" fill="#94a3b8">Stops when material is insufficient · Bilibili · YouTube · local files</text>
   </g>
 
   <!-- 右侧：三条证据汇成一张卡片 -->

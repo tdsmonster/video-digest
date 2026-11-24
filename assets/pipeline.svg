@@ -13,7 +13,7 @@
   <rect width="1280" height="420" rx="24" fill="#f8fafc"/>
   <g font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
     <text x="48" y="58" font-size="22" font-weight="700" fill="#0f172a">处理流程</text>
-    <text x="150" y="58" font-size="15" fill="#64748b">Pipeline · 有字幕就不下载，没证据就不生成</text>
+    <text x="150" y="58" font-size="15" fill="#64748b">Pipeline · 有字幕时不下载；材料不足时不生成</text>
 
     <!-- 输入 -->
     <g transform="translate(48,110)" filter="url(#sh)">

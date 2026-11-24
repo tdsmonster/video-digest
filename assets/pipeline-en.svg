@@ -13,7 +13,7 @@
   <rect width="1280" height="420" rx="24" fill="#f8fafc"/>
   <g font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
     <text x="48" y="58" font-size="22" font-weight="700" fill="#0f172a">Pipeline</text>
-    <text x="146" y="58" font-size="15" fill="#64748b">· no download when subtitles exist, no summary without evidence</text>
+    <text x="146" y="58" font-size="15" fill="#64748b">· no download when subtitles exist; stops when material is insufficient</text>
 
     <!-- 输入 -->
     <g transform="translate(48,110)" filter="url(#sh)">

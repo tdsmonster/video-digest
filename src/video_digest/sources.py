@@ -186,7 +186,7 @@ def video_format_args(max_height: int) -> list[str]:
 def download_media(url: str, out_dir: Path, duration: float, cookies: str | None, max_height: int = 1080):
     """返回 (video_path | None, audio_path | None)。下载 ≤max_height 的最高可用画质 + 最佳音轨，失败退回只下音频。
 
-    画面文字识别对分辨率敏感：录屏/PPT 里的小字在 480p 下约有两成认不出来（见 README「清晰度」一节），
+    画面文字识别对分辨率敏感：在一个录屏教程上，480p 比 1080p 少识别约两成文字行（见 README「清晰度」一节），
     所以默认上限 1080p；语音转写不受影响（音轨总是取最佳）。
     """
     h = int(max_height or 1080)
