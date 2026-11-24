@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420">
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0ea5e9"/><stop offset="1" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#64748b"/>
+    </marker>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="420" rx="24" fill="#f8fafc"/>
+  <g font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <text x="48" y="58" font-size="22" font-weight="700" fill="#0f172a">Pipeline</text>
+    <text x="146" y="58" font-size="15" fill="#64748b">· no download when subtitles exist, no summary without evidence</text>
+
+    <!-- 输入 -->
+    <g transform="translate(48,110)" filter="url(#sh)">
+      <rect width="170" height="200" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="38" font-size="13" font-weight="700" fill="#0ea5e9">INPUT</text>
+      <text x="20" y="68" font-size="17" font-weight="700" fill="#0f172a">URL / file</text>
+      <text x="20" y="100" font-size="14" fill="#475569">Bilibili · YouTube</text>
+      <text x="20" y="124" font-size="14" fill="#475569">BV id · b23 links</text>
+      <text x="20" y="148" font-size="14" fill="#475569">App share text</text>
+      <text x="20" y="172" font-size="14" fill="#475569">Local video</text>
+    </g>
+    <path d="M222 210H262" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- 1 元数据+字幕 -->
+    <g transform="translate(266,110)" filter="url(#sh)">
+      <rect width="200" height="200" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="38" font-size="13" font-weight="700" fill="#0ea5e9">① SUBTITLES</text>
+      <text x="20" y="68" font-size="17" font-weight="700" fill="#0f172a">Metadata + subs</text>
+      <text x="20" y="100" font-size="14" fill="#475569">Title · desc · chapters</text>
+      <text x="20" y="124" font-size="14" fill="#475569">Bilibili AI subs (login)</text>
+      <text x="20" y="148" font-size="14" fill="#475569">Danmaku → peaks</text>
+      <rect x="20" y="164" width="172" height="24" rx="12" fill="#e0f2fe"/>
+      <text x="34" y="181" font-size="12.5" font-weight="600" fill="#0369a1">Subs → no download</text>
+    </g>
+    <path d="M470 210H510" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- 2 转写 -->
+    <g transform="translate(514,110)" filter="url(#sh)">
+      <rect width="200" height="200" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="38" font-size="13" font-weight="700" fill="#6366f1">② SPEECH</text>
+      <text x="20" y="68" font-size="17" font-weight="700" fill="#0f172a">Speech-to-text</text>
+      <text x="20" y="100" font-size="14" fill="#475569">MLX-Whisper</text>
+      <text x="20" y="124" font-size="14" fill="#475569">faster-whisper · GPU</text>
+      <text x="20" y="148" font-size="14" fill="#475569">whisper.cpp</text>
+      <rect x="20" y="164" width="172" height="24" rx="12" fill="#fef3c7"/>
+      <text x="34" y="181" font-size="12.5" font-weight="600" fill="#b45309">⛉ Hallucination gate</text>
+    </g>
+    <path d="M718 210H758" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- 3 画面 -->
+    <g transform="translate(762,110)" filter="url(#sh)">
+      <rect width="200" height="200" rx="16" fill="#ffffff" stroke="#e2e8f0"/>
+      <text x="20" y="38" font-size="13" font-weight="700" fill="#8b5cf6">③ VISION</text>
+      <text x="20" y="68" font-size="17" font-weight="700" fill="#0f172a">Frames + OCR</text>
+      <text x="20" y="100" font-size="14" fill="#475569">Apple Vision</text>
+      <text x="20" y="124" font-size="14" fill="#475569">RapidOCR · Tesseract</text>
+      <text x="20" y="148" font-size="14" fill="#475569">Deduped, [mm:ss]</text>
+      <rect x="20" y="164" width="172" height="24" rx="12" fill="#fee2e2"/>
+      <text x="34" y="181" font-size="12.5" font-weight="600" fill="#b91c1c">⛉ Evidence gate (exit 2)</text>
+    </g>
+    <path d="M966 210H1006" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+    <!-- 4 输出 -->
+    <g transform="translate(1010,110)" filter="url(#sh)">
+      <rect width="222" height="200" rx="16" fill="#0f172a"/>
+      <rect width="222" height="6" rx="3" fill="url(#a)"/>
+      <text x="20" y="38" font-size="13" font-weight="700" fill="#a78bfa">④ DIGEST</text>
+      <text x="20" y="68" font-size="17" font-weight="700" fill="#f8fafc">LLM synthesis</text>
+      <text x="20" y="100" font-size="14" fill="#cbd5e1">summary.txt · chat card</text>
+      <text x="20" y="124" font-size="14" fill="#cbd5e1">report.md · long report</text>
+      <text x="20" y="148" font-size="14" fill="#cbd5e1">contact_sheet.jpg</text>
+      <text x="20" y="178" font-size="12.5" fill="#94a3b8">Any OpenAI-compatible API</text>
+    </g>
+
+    <!-- 底部 watch -->
+    <g transform="translate(266,340)">
+      <rect width="966" height="44" rx="12" fill="#ffffff" stroke="#c7d2fe" stroke-dasharray="5 4"/>
+      <text x="20" y="28" font-size="14.5" fill="#334155"><tspan font-weight="700" fill="#6366f1">watch</tspan>   polls Bilibili favorites / uploaders / YouTube channels → digests new videos → reads linked arXiv papers &amp; GitHub repos</text>
+    </g>
+  </g>
+</svg>

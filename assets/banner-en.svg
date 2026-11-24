@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1020"/>
+      <stop offset="0.55" stop-color="#151b3a"/>
+      <stop offset="1" stop-color="#22184a"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+    </pattern>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="320" rx="24" fill="url(#bg)"/>
+  <rect width="1280" height="320" rx="24" fill="url(#grid)"/>
+  <circle cx="1040" cy="120" r="120" fill="#7c3aed" opacity="0.35" filter="url(#glow)"/>
+  <circle cx="860" cy="250" r="90" fill="#0ea5e9" opacity="0.25" filter="url(#glow)"/>
+
+  <g font-family="-apple-system, 'SF Pro Display', 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <text x="80" y="132" font-size="72" font-weight="800" fill="#f8fafc" letter-spacing="-1.5">video<tspan fill="url(#accent)">-</tspan>digest</text>
+    <rect x="82" y="156" width="112" height="5" rx="2.5" fill="url(#accent)"/>
+    <text x="80" y="212" font-size="30" font-weight="600" fill="#e2e8f0">Video → evidence-grounded AI summary</text>
+    <text x="80" y="252" font-size="19" fill="#94a3b8">No evidence, no summary · Bilibili · YouTube · local files</text>
+  </g>
+
+  <!-- 右侧：三条证据汇成一张卡片 -->
+  <g font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif" font-size="15" font-weight="600">
+    <g transform="translate(800,70)">
+      <rect width="150" height="44" rx="12" fill="#ffffff" fill-opacity="0.07" stroke="#38bdf8" stroke-opacity="0.6"/>
+      <text x="20" y="28" fill="#bae6fd">▤  Transcript</text>
+    </g>
+    <g transform="translate(800,138)">
+      <rect width="150" height="44" rx="12" fill="#ffffff" fill-opacity="0.07" stroke="#818cf8" stroke-opacity="0.6"/>
+      <text x="20" y="28" fill="#c7d2fe">◫  Screen text</text>
+    </g>
+    <g transform="translate(800,206)">
+      <rect width="150" height="44" rx="12" fill="#ffffff" fill-opacity="0.07" stroke="#a78bfa" stroke-opacity="0.6"/>
+      <text x="20" y="28" fill="#ddd6fe">❝  Description</text>
+    </g>
+    <path d="M950 92 C1000 92 1000 160 1040 160 M950 160 L1040 160 M950 228 C1000 228 1000 160 1040 160"
+          fill="none" stroke="url(#accent)" stroke-width="2" stroke-opacity="0.8"/>
+    <g transform="translate(1040,96)">
+      <rect width="168" height="128" rx="16" fill="#f8fafc"/>
+      <rect x="16" y="18" width="96" height="9" rx="4.5" fill="#0f172a"/>
+      <rect x="16" y="40" width="136" height="6" rx="3" fill="#94a3b8"/>
+      <rect x="16" y="56" width="120" height="6" rx="3" fill="#94a3b8"/>
+      <rect x="16" y="72" width="128" height="6" rx="3" fill="#94a3b8"/>
+      <rect x="16" y="98" width="72" height="16" rx="8" fill="url(#accent)"/>
+      <text x="24" y="111" font-size="10.5" fill="#0b1020">[03:12]</text>
+    </g>
+  </g>
+</svg>
