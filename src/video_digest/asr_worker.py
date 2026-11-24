@@ -47,27 +47,51 @@ def run_mlx(audio, model, language):
     return res.get("language"), segs
 
 
+def load_wav16k(path):
+    """直接读 16k 单声道 wav（pipeline 已用 ffmpeg 转好），不走 PyAV：
+    新版 PyAV 去掉了 faster-whisper 传的 metadata_errors 参数，会直接报错。"""
+    import wave
+
+    import numpy as np
+
+    with wave.open(path, "rb") as w:
+        assert w.getframerate() == 16000 and w.getnchannels() == 1 and w.getsampwidth() == 2, "需要 16k 单声道 16bit wav"
+        data = w.readframes(w.getnframes())
+    return np.frombuffer(data, dtype=np.int16).astype(np.float32) / 32768.0
+
+
 def run_faster_whisper(audio, model, language, device):
     from faster_whisper import WhisperModel
 
+    want_cuda = device == "cuda"
     if device == "auto":
         try:
             import ctranslate2
-            device = "cuda" if ctranslate2.get_cuda_device_count() > 0 else "cpu"
+            want_cuda = ctranslate2.get_cuda_device_count() > 0
         except Exception:
-            device = "cpu"
-    if not model:   # CPU 上 turbo 太慢，默认 small；有 GPU 用 turbo
-        model = "large-v3-turbo" if device == "cuda" else "small"
-    compute = "float16" if device == "cuda" else "int8"
-    print(f"[faster-whisper] model={model} device={device} compute={compute}", file=sys.stderr, flush=True)
-    wm = WhisperModel(model, device=device, compute_type=compute)
-    it, info = wm.transcribe(
-        audio, language=language or None, condition_on_previous_text=False, vad_filter=True,
-        initial_prompt=ZH_PROMPT if language in ("", None, "zh") else None,
-    )
-    segs = [{"start": s.start, "end": s.end, "text": s.text, "compression_ratio": s.compression_ratio,
-             "no_speech_prob": s.no_speech_prob, "avg_logprob": s.avg_logprob} for s in it]
-    return info.language, segs
+            want_cuda = False
+    samples = load_wav16k(audio)
+
+    def attempt(dev):
+        m = model or ("large-v3-turbo" if dev == "cuda" else "small")   # CPU 上 turbo 太慢，默认 small
+        compute = "float16" if dev == "cuda" else "int8"
+        print(f"[faster-whisper] model={m} device={dev} compute={compute}", file=sys.stderr, flush=True)
+        wm = WhisperModel(m, device=dev, compute_type=compute)
+        it, info = wm.transcribe(
+            samples, language=language or None, condition_on_previous_text=False, vad_filter=True,
+            initial_prompt=ZH_PROMPT if language in ("", None, "zh") else None,
+        )
+        segs = [{"start": s.start, "end": s.end, "text": s.text, "compression_ratio": s.compression_ratio,
+                 "no_speech_prob": s.no_speech_prob, "avg_logprob": s.avg_logprob} for s in it]   # 真正推理在这里
+        return info.language, segs
+
+    if want_cuda:
+        try:
+            return attempt("cuda")
+        except Exception as e:
+            # 有 NVIDIA 显卡但没装 CUDA 12 / cuDNN 9 运行库（Windows 上常见：cublas64_12.dll not found）
+            print(f"[faster-whisper] GPU 不可用，改用 CPU：{str(e)[:160]}", file=sys.stderr, flush=True)
+    return attempt("cpu")
 
 
 def main():
