@@ -107,7 +107,7 @@ def visual_evidence(video: Path, out_dir: Path, duration: float, cfg):
     n = n_cfg if dur > 120 else max(8, int(dur / 3))
     interval = dur / n
     c, _, err = run_cmd(["ffmpeg", "-loglevel", "error", "-y", "-i", str(video),
-                         "-vf", f"fps=1/{interval:.3f}:start_time=0,scale=960:-2", "-frames:v", str(n),
+                         "-vf", f"fps=1/{interval:.3f}:start_time=0,scale='min(1920,iw)':-2", "-frames:v", str(n),
                          str(frames_dir / "f_%03d.png")], timeout=int(max(120, dur * 0.15)))
     frames = sorted(frames_dir.glob("f_*.png"))
     times = [(i + 0.5) * interval for i in range(len(frames))]   # fps 滤镜第 i 帧 ≈ (i+0.5)*interval
@@ -130,7 +130,7 @@ def visual_evidence(video: Path, out_dir: Path, duration: float, cfg):
         a, b = set(text), set(last)
         if last and len(a & b) / max(1, len(a | b)) > 0.8:
             continue
-        evidence.append((times[i], text[:300]))
+        evidence.append((times[i], text[:600]))   # 1080p 下一帧的界面文字可能较多
         last = text
     keep = int(cfg["ocr"].get("keep") or 30)
     if len(evidence) > keep:

@@ -120,7 +120,7 @@ def process_video(src: str, cfg: dict, output_dir: str | None = None, mode: str 
         elif is_local:
             video = audio = Path(url)
         else:
-            video, audio = sources.download_media(url, out_dir, dur, cookies)
+            video, audio = sources.download_media(url, out_dir, dur, cookies, int(cfg["video"]["max_height"]))
 
         if sub_source:
             transcript, t_ok, _ = transcript_quality_gate(parse_srt(out_dir / "transcript.srt"), dur, trusted=True)

@@ -38,6 +38,8 @@ def cmd_run(a, cfg) -> int:
 
     if a.language:
         cfg["output"]["language"] = a.language
+    if a.max_height:
+        cfg["video"]["max_height"] = a.max_height
     try:
         r = process_video(a.src, cfg, a.output, a.mode, a.keep_frames)
     except VideoUnavailableError as e:
@@ -169,6 +171,8 @@ def build_parser() -> argparse.ArgumentParser:
                    help="auto：有平台字幕就不下载；online：只用字幕/简介/弹幕；download：强制下载转写+画面文字")
     r.add_argument("--json", action="store_true", help="以 JSON 输出结果")
     r.add_argument("--language", help="摘要语言（zh / en / ja / ko ...），覆盖配置")
+    r.add_argument("--max-height", type=int, choices=[360, 480, 720, 1080, 1440, 2160],
+                   help="需要下载时的最高分辨率（默认 1080；省流量可用 720/480，但画面小字识别率会下降）")
     r.add_argument("--keep-frames", action="store_true", help="保留候选帧（调试用）")
 
     d = sub.add_parser("doctor", help="检查环境")

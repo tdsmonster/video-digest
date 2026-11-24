@@ -175,12 +175,17 @@ def danmaku_highlights(dm, duration, top: int = 6) -> str:
     return "\n".join(l for _, l in sorted(lines))
 
 
-def download_media(url: str, out_dir: Path, duration: float, cookies: str | None):
-    """返回 (video_path | None, audio_path | None)。一次下载 ≤480p 音视频，失败退回只下音频。"""
-    log("[2/4] 下载 ≤480p 音视频...")
-    tmo = int(max(180, (duration or 0) * 0.6))
-    cmd = ytdlp_base(url, cookies) + ["-f", "bv*[height<=480]+ba/b[height<=480]/bv*+ba/b",
-                                      "--merge-output-format", "mp4", "-o", str(out_dir / "media.%(ext)s"), url]
+def download_media(url: str, out_dir: Path, duration: float, cookies: str | None, max_height: int = 1080):
+    """返回 (video_path | None, audio_path | None)。下载 ≤max_height 的视频 + 最佳音轨，失败退回只下音频。
+
+    画面文字识别对分辨率敏感：录屏/PPT 里的小字在 480p 下约有两成认不出来（见 README「清晰度」一节），
+    所以默认 1080p；语音转写不受影响（音轨总是取最佳）。avc 优先，解码兼容性最好。
+    """
+    h = int(max_height or 1080)
+    log(f"[2/4] 下载 ≤{h}p 视频 + 音轨...")
+    tmo = int(max(300, (duration or 0) * (0.6 + h / 1080)))
+    fmt = (f"bv*[height<={h}][vcodec^=avc]+ba/bv*[height<={h}]+ba/b[height<={h}]/bv*+ba/b")
+    cmd = ytdlp_base(url, cookies) + ["-f", fmt, "--merge-output-format", "mp4", "-o", str(out_dir / "media.%(ext)s"), url]
     _, _, err = run_cmd(cmd, timeout=tmo)
     vids = [f for f in out_dir.glob("media.*") if f.suffix in (".mp4", ".mkv", ".webm") and f.stat().st_size > 100_000]
     if vids:

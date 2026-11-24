@@ -51,6 +51,11 @@ DEFAULTS: dict = {
         "temperature": 0.2,
         "timeout": 300,
     },
+    "video": {
+        # 需要下载时的最高分辨率。画面小字（录屏、代码、PPT）对清晰度敏感：
+        # 实测录屏教程的文字行召回 480p 79% / 720p 88% / 1080p 100%；下载量约 1x / 1.8x / 3.8x
+        "max_height": 1080,
+    },
     "asr": {
         # auto: Apple Silicon → mlx；有 faster-whisper → faster-whisper；有 whisper.cpp → whisper-cpp；否则 none
         "backend": "auto",         # auto | mlx | faster-whisper | whisper-cpp | none
@@ -115,6 +120,7 @@ def load(explicit: str | None = None) -> dict:
         "VIDEO_DIGEST_OCR": ("ocr", "backend"),
         "VIDEO_DIGEST_OUTPUT": ("output", "dir"),
         "VIDEO_DIGEST_LANGUAGE": ("output", "language"),
+        "VIDEO_DIGEST_MAX_HEIGHT": ("video", "max_height"),
     }
     for k, (sec, key) in simple.items():
         if env.get(k):

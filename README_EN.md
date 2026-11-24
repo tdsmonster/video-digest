@@ -145,6 +145,13 @@ video-digest <url> --json                       # for scripts and bots
 
 Exit codes: `0` ok · `1` unavailable · `2` insufficient evidence · `3` LLM failure (a fallback report is still written)
 
+<details>
+<summary>Resolution: why downloads default to 1080p</summary>
+
+On-screen text recognition is sensitive to resolution. On a 5-minute screen-recording tutorial (24 identical frames, 1080p as reference), line-level OCR recall was **79% at 480p**, **88% at 720p** and **100% at 1080p**, for roughly 1× / 1.8× / 3.8× the download size. Large titles survive at 480p; small UI text and prices do not. Speech recognition is unaffected because audio always uses the best stream. `auto` mode skips the download entirely when subtitles exist. To save bandwidth, use `--max-height 720` or set `[video] max_height = 720`.
+
+</details>
+
 `video-digest bili-login` logs in to Bilibili by QR code, which unlocks AI subtitles and private favorites. The cookie stays local with mode 600.
 
 ## 📡 Watch subscriptions
