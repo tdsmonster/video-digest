@@ -68,14 +68,21 @@ def cmd_doctor(a, cfg) -> int:
     print(f"配置文件：{cfg['_path'] or '（未找到，使用默认值）'}")
     print(f"输出目录：{cfg['output']['dir']}\n")
 
-    for tool, need in (("yt-dlp", True), ("ffmpeg", True), ("ffprobe", True)):
-        p = shutil.which(tool)
-        if p:
-            c, out, _ = run_cmd([tool, "--version"] if tool == "yt-dlp" else [tool, "-version"], timeout=20)
+    from .util import ytdlp_cmd
+
+    c, out, err = run_cmd(ytdlp_cmd() + ["--version"], timeout=30)
+    if c == 0:
+        line("ok", "yt-dlp", out.strip()[:60])
+    else:
+        ok = False
+        line("bad", "yt-dlp", f"无法运行（pip install -U yt-dlp）：{err.strip()[-120:]}")
+    for tool in ("ffmpeg", "ffprobe"):
+        if shutil.which(tool):
+            c, out, _ = run_cmd([tool, "-version"], timeout=20)
             line("ok", tool, (out.splitlines() or [""])[0][:60])
         else:
             ok = False
-            line("bad", tool, "未找到，必须安装")
+            line("bad", tool, "未找到，必须安装（见 README）")
 
     b = asr.resolve_backend(cfg)
     hint = {"none": "pip install 'video-digest[whisper]'（faster-whisper，任何平台）" +

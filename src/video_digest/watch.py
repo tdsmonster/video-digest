@@ -25,7 +25,7 @@ from http.cookiejar import MozillaCookieJar
 from pathlib import Path
 
 from . import llm, prompts
-from .util import child_env, fmt_ts, log, run_cmd
+from .util import child_env, fmt_ts, log, run_cmd, ytdlp_cmd
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 PER_VIDEO_TIMEOUT = 25 * 60
@@ -91,7 +91,7 @@ def list_source(http: Http, src: dict, pages: int = 1) -> list[dict]:
                 for m in items if m.get("bv_id")]
     if t == "ytdlp":       # YouTube 频道/播放列表等，任何 yt-dlp 支持的列表
         n = 200 if pages > 1 else 20
-        c, out, err = run_cmd(["yt-dlp", "--flat-playlist", "-J", "--playlist-end", str(n), src["url"]], timeout=180)
+        c, out, err = run_cmd(ytdlp_cmd() + ["--flat-playlist", "-J", "--playlist-end", str(n), src["url"]], timeout=180)
         if c != 0:
             raise RuntimeError(f"yt-dlp 列表失败: {err.strip()[-200:]}")
         entries = (json.loads(out).get("entries") or [])

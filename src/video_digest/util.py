@@ -13,6 +13,11 @@ BILI_NO_PROXY = "bilibili.com,bilivideo.com,hdslb.com,b23.tv,127.0.0.1,localhost
 IS_WIN = os.name == "nt"
 
 
+def ytdlp_cmd() -> list[str]:
+    """用和本包装在一起的 yt-dlp（pipx / uv tool 安装时，依赖的命令不在 PATH 里）。"""
+    return [sys.executable, "-m", "yt_dlp"]
+
+
 def log(msg: str) -> None:
     print(msg, file=sys.stderr, flush=True)
 

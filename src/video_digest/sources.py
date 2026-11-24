@@ -8,7 +8,7 @@ import shutil
 import urllib.request
 from pathlib import Path
 
-from .util import fmt_ts, log, run_cmd
+from .util import fmt_ts, log, run_cmd, ytdlp_cmd
 
 SUB_PRIORITY = ["zh-CN", "zh-Hans", "zh-Hant", "zh", "ai-zh", "en", "ai-en", "ja", "ko"]
 
@@ -51,7 +51,7 @@ def is_bilibili(url: str) -> bool:
 
 
 def ytdlp_base(url: str, cookies: str | None) -> list[str]:
-    cmd = ["yt-dlp", "--no-playlist", "--no-warnings", "--retries", "5"]
+    cmd = ytdlp_cmd() + ["--no-playlist", "--no-warnings", "--retries", "5"]
     if is_bilibili(url):
         # yt-dlp #17847：B站备用 CDN 不带 Range 头会回 HTTP 567
         cmd += ["--add-headers", "Range:bytes=0-"]
