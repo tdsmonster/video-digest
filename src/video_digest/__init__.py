@@ -1,8 +1,2 @@
-"""
-video-digest: 轻量音画双模态视频总结小工具
-"""
-
-from .cli import process_video
-
-__version__ = "0.1.0"
-__all__ = ["process_video"]
+"""video-digest：视频 → 字幕/转写 + 画面文字 → 有证据的 AI 摘要。"""
+__version__ = "0.2.0"

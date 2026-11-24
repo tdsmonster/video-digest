@@ -1,0 +1,65 @@
+# video-digest 配置示例
+# 复制到下面的位置并按需修改（`video-digest config-path` 会显示确切路径）：
+#   macOS / Linux: ~/.config/video-digest/config.toml
+#   Windows:       %APPDATA%\video-digest\config.toml
+# 所有项都可省略，省略即用默认值。
+
+[output]
+# dir = "~/video-digests"     # 结果输出目录；默认在用户数据目录下
+language = "zh"               # 摘要语言：zh / en / ja / ko ...
+keep_last = 20                # 自动命名的任务目录最多保留几个
+max_gb = 2.0
+
+[llm]
+# 任何 OpenAI 兼容接口。API key 建议放环境变量 VIDEO_DIGEST_API_KEY，不要写在这里。
+base_url = "https://api.deepseek.com"
+model = "deepseek-flash"
+# 例：OpenAI
+# base_url = "https://api.openai.com/v1"
+# model = "gpt-4.1-mini"
+# 例：本地 Ollama（不需要 key）
+# base_url = "http://localhost:11434/v1"
+# model = "qwen3:14b"
+# api_key_env = "MY_KEY_VAR"  # 指定从哪个环境变量读 key
+max_tokens = 16000            # 推理模型的思考 token 也算在里面，别设太小
+
+[asr]
+backend = "auto"              # auto | mlx | faster-whisper | whisper-cpp | none
+# model = ""                  # mlx 默认 mlx-community/whisper-large-v3-turbo；faster-whisper GPU 默认 large-v3-turbo、CPU 默认 small
+# language = ""               # 空 = 自动检测
+# python = ""                 # 用另一个 Python 跑转写（比如单独装了 mlx-whisper 的 venv）
+# device = "auto"             # faster-whisper: auto | cpu | cuda
+# whisper_cpp_bin = "whisper-cli"
+# whisper_cpp_model = "/path/to/ggml-large-v3-turbo.bin"
+
+[ocr]
+backend = "auto"              # auto | apple-vision | rapidocr | tesseract | none
+frames = 48                   # 均匀抽多少帧做文字识别
+keep = 30                     # 去重后最多保留多少条画面文字
+# tesseract_lang = "chi_sim+eng"
+
+[bilibili]
+# cookies = ""                # 默认在用户数据目录；`video-digest bili-login` 扫码生成
+
+[watch]
+# output_dir = "~/notes/video-watch"   # 每个新视频一份 Markdown
+# papers_dir = "~/papers"              # 设置后会缓存视频里提到的 arXiv 论文 PDF
+max_per_run = 5
+mode = "auto"
+fetch_links = true
+
+# 订阅来源，可以写多个：
+# [[watch.sources]]
+# type = "bili_fav"            # B站收藏夹（私密收藏夹需要先 bili-login）
+# id = 1234567890              # 收藏夹页面 URL 里的 fid / media_id
+# label = "收藏夹 · AI"
+#
+# [[watch.sources]]
+# type = "bili_up"             # B站 UP 主
+# id = 123456                  # space.bilibili.com/<这个数字>
+# label = "某个 UP 主"
+#
+# [[watch.sources]]
+# type = "ytdlp"               # 任何 yt-dlp 支持的频道/播放列表（YouTube 等）
+# url = "https://www.youtube.com/@SomeChannel/videos"
+# label = "YouTube · SomeChannel"

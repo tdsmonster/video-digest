@@ -4,29 +4,59 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "video-digest"
-version = "0.1.0"
-description = "A lightweight video summarizer CLI that combines audio transcripts with visual OCR."
+dynamic = ["version"]
+description = "Video → subtitles/transcript + on-screen text → evidence-grounded AI summary. Bilibili & YouTube, macOS / Linux / Windows."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [
-    { name = "tdsmonster" }
-]
+authors = [{ name = "tdsmonster" }]
+keywords = ["video", "summary", "whisper", "ocr", "bilibili", "youtube", "llm", "yt-dlp"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
     "Topic :: Multimedia :: Video",
+    "Environment :: Console",
+]
+dependencies = [
+    "yt-dlp>=2025.1.1",
+    "tomli>=2.0; python_version<'3.11'",
 ]
 
-dependencies = []
-
 [project.optional-dependencies]
-mlx = ["mlx-whisper"]
-ocr = ["rapidocr-onnxruntime"]
+# 语音转写（任选其一）
+mlx = ["mlx-whisper>=0.4; sys_platform == 'darwin' and platform_machine == 'arm64'"]
+whisper = ["faster-whisper>=1.1"]
+# 画面文字（macOS 自带 Apple Vision，不需要装）
+ocr = ["rapidocr-onnxruntime>=1.3"]
+# B站扫码登录时在终端显示二维码
+bili = ["qrcode[pil]>=7.4"]
+# 一次装齐：Apple Silicon 自动用 MLX，其他平台用 faster-whisper + RapidOCR
+all = [
+    "mlx-whisper>=0.4; sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "faster-whisper>=1.1; sys_platform != 'darwin' or platform_machine != 'arm64'",
+    "rapidocr-onnxruntime>=1.3; sys_platform != 'darwin'",
+    "qrcode[pil]>=7.4",
+]
+dev = ["pytest>=8"]
+
+[project.urls]
+Homepage = "https://github.com/tdsmonster/video-digest"
+Issues = "https://github.com/tdsmonster/video-digest/issues"
 
 [project.scripts]
 video-digest = "video_digest.cli:main"
 
+[tool.setuptools.dynamic]
+version = { attr = "video_digest.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.setuptools.package-data]
-"video_digest" = ["vision/*.swift", "vision/mac-vision"]
+video_digest = ["native/*.swift"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

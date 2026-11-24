@@ -1,4 +1,5 @@
-from video_digest.cli import main
+import sys
 
-if __name__ == "__main__":
-    main()
+from .cli import main
+
+sys.exit(main())

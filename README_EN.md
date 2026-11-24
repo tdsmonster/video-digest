@@ -1,137 +1,102 @@
-<div align="center">
+# video-digest
 
-# 🎬 Video-Digest
+**Video → subtitles/transcript + on-screen text → evidence-grounded AI summary.** Bilibili, YouTube (anything yt-dlp supports) and local files. Runs on macOS, Linux and Windows.
 
-**Lightweight Video Summarizer & Visual Note-Taking CLI**
+[中文](README.md)
 
-*A lightweight video summarizer CLI that combines audio transcripts with visual OCR.*
+For each video you get:
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-brightgreen.svg)](https://www.python.org/)
-[![Platform: macOS / Linux / Windows](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)](https://github.com/tdsmonster/video-digest)
+- `summary.txt`: a plain-text card for chat apps. It has a one-line gist, 3–5 key points with `[mm:ss]` timestamps and a "worth watching?" verdict.
+- `report.md`: a chronological long-form report. It lists key facts, what the on-screen text added and where the evidence is weak.
+- `contact_sheet.jpg`: a 4×4 storyboard.
+- `transcript.srt` / `ocr.txt` / `result.json`: the raw evidence and structured results.
 
-<p align="center">
-  <a href="#-key-features">Key Features</a> •
-  <a href="#-pipeline-workflow">Workflow</a> •
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-usage-examples">Usage</a> •
-  <a href="#-output-artifacts">Outputs</a> •
-  <a href="README.md">中文文档</a>
-</p>
+## Why not just "subtitles → LLM"
 
----
+- **It doesn't make things up.** If there is no reliable speech, on-screen text, description or danmaku, it exits with code 2 instead of writing a summary from the title alone.
+- **It catches music hallucinations.** Whisper "hears" lyric credits, "thanks for watching" or "oh oh oh" over music and silence. A density/repetition/phrase gate drops these instead of treating them as dialogue.
+- **It reads the screen.** Frames are sampled, OCR'd and de-duplicated, so slides, code, error messages and URLs become timestamped evidence.
+- **It downloads only when needed.** With platform subtitles (including Bilibili AI subtitles after login), a 44-minute lecture is summarized in about 50 seconds with no download. Otherwise it fetches ≤480p video and transcribes locally.
+- **It handles Bilibili quirks.** These include HTTP 567 (yt-dlp #17847), b23.tv short links, app share text and multi-part videos. Danmaku peaks go to the LLM as audience reaction, not as video content.
+- **It can watch subscriptions.** `video-digest watch` polls Bilibili favorites, uploaders or any YouTube channel/playlist and digests new videos. It also follows arXiv and GitHub links from the description, pinned comment or screen.
 
-</div>
+## Install
 
-When watching lectures, coding tutorials, or technical presentations, summarizing text subtitles alone often misses crucial visual context (e.g., code snippets, error messages, slides, and benchmark charts). 
-
-`Video-Digest` extracts subtitles and audio while simultaneously capturing keyframes and performing local OCR, producing a comprehensive, verifiable summary report.
-
----
-
-## 🗺️ Pipeline Workflow
-
-```
- ┌──────────────────┐       ┌────────────────────────┐       ┌────────────────────────┐       ┌──────────────────────┐
- │ 1. Input & Subs  │  ──►  │ 2. Dual-Track Extract  │  ──►  │ 3. LLM Synthesis       │  ──►  │ 4. Output Delivery   │
- │ • URL / Local    │       │ • Audio: MLX / Whisper │       │ • Map-Reduce Guard     │       │ • summary.txt (Card) │
- │ • Official First │       │ • Video: ANE / OCR     │       │ • Standard OpenAI / DS │       │ • report.md (Notes)  │
- └──────────────────┘       └────────────────────────┘       └────────────────────────┘       └──────────────────────┘
-```
-
-<div align="center">
-  <img src="assets/workflow_pipeline.svg" alt="Video-Digest Pipeline Workflow" width="95%">
-</div>
-
----
-
-## ✨ Key Features
-
-1. **Audio-Visual Grounding**
-   - **Transcript First**: Extracts native subtitles in seconds. Falls back to offline Whisper (e.g., Apple Silicon MLX-Whisper or whisper.cpp) if no subtitles are available.
-   - **Visual Evidence**: Extracts key visual frames using ffmpeg `mpdecimate`, runs local OCR (macOS Vision ANE or RapidOCR on CPU), and tiles a 4×4 contact sheet for quick inspection.
-
-2. **Lightweight & Clean Architecture**
-   - Core CLI is built purely with Python standard libraries—zero heavy forced dependencies.
-   - Temporary video/audio slices are purged in `finally` blocks, keeping long-term disk usage `< 2MB`.
-
-3. **Standard LLM Compatibility**
-   - Works with any OpenAI-compatible API (DeepSeek, OpenAI, local Ollama, vLLM, etc.) via standard environment variables or flags.
-
----
-
-## 🛠️ Requirements
-
-- **Python**: 3.9+
-- **System Tools**:
-  - `ffmpeg`: `brew install ffmpeg` or `apt install ffmpeg`
-  - `yt-dlp`: `pip install yt-dlp`
-- **Optional Dependencies**:
-  - macOS users: `pip install mlx-whisper` for fast local speech transcription.
-  - Linux/Windows users: `pip install rapidocr-onnxruntime` for CPU OCR.
-
----
-
-## 🚀 Quick Start
-
-### 1. Installation
+First install **ffmpeg**: `brew install ffmpeg` / `sudo apt install ffmpeg` / `winget install Gyan.FFmpeg`.
 
 ```bash
-git clone https://github.com/tdsmonster/video-digest.git
-cd video-digest
-pip install -e .
+# Everything: MLX + Apple Vision on Apple Silicon; faster-whisper + RapidOCR elsewhere
+uv tool install "video-digest[all] @ git+https://github.com/tdsmonster/video-digest"
+# or: pipx install "video-digest[all] @ git+https://github.com/tdsmonster/video-digest"
+
+export VIDEO_DIGEST_API_KEY=sk-...     # PowerShell: $env:VIDEO_DIGEST_API_KEY="sk-..."
+video-digest doctor --ping
 ```
 
-### 2. Configure API Key
+Extras you can install on their own:
+
+- `[whisper]`: faster-whisper, used automatically with CUDA if there is an NVIDIA GPU
+- `[mlx]`: MLX-Whisper for Apple Silicon
+- `[ocr]`: RapidOCR
+- `[bili]`: shows the Bilibili login QR code in the terminal
+
+On macOS the Apple Vision OCR helper is compiled on first use. This needs the Xcode Command Line Tools.
+
+## Usage
 
 ```bash
-# Recommended: DeepSeek
-export DEEPSEEK_API_KEY="your-api-key"
-
-# Or standard OpenAI
-export OPENAI_API_KEY="your-api-key"
-export OPENAI_BASE_URL="https://api.openai.com/v1"
+video-digest https://www.youtube.com/watch?v=xxxx --language en
+video-digest BV1xx411c7mD
+video-digest ./lecture.mp4
+video-digest <url> --mode download    # force download + transcription + OCR
+video-digest <url> --json
 ```
 
----
+`--mode` options:
 
-## 💡 Usage Examples
+- `auto` (default): use subtitles online if available, otherwise download
+- `online`: never download
+- `download`: always download
 
-### 1. Summarize Online Video or Bilibili
+Exit codes: `0` ok, `1` unavailable, `2` insufficient evidence, `3` LLM failure.
+
+`video-digest bili-login` logs in to Bilibili by QR code. The cookie stays local with mode 600.
+
+## Watch subscriptions
+
+Add sources to `config.toml` (see [config.example.toml](config.example.toml)). Supported types are `bili_fav`, `bili_up` and `ytdlp` (any channel or playlist URL).
 
 ```bash
-# Provide URL or Bilibili BV ID
-video-digest "https://www.bilibili.com/video/BV1xx411c7mD"
-
-# Custom output directory
-video-digest "BV1xx411c7mD" -o ./my_notes
+video-digest watch --init   # first run: record existing videos as baseline
+video-digest watch          # from cron / Task Scheduler; prints a digest only when there is something new
 ```
 
-### 2. Summarize Local Media
+## Configuration
 
-```bash
-video-digest "/path/to/recording.mp4"
+Run `video-digest config-path` to find the config file. Any OpenAI-compatible endpoint works:
+
+```toml
+[llm]
+base_url = "https://api.openai.com/v1"   # or http://localhost:11434/v1 for Ollama (no key needed)
+model = "gpt-4.1-mini"
+
+[output]
+language = "en"
 ```
 
-### 3. Using Cookies (Optional)
+| Platform | Speech-to-text | On-screen text |
+|---|---|---|
+| macOS Apple Silicon | MLX-Whisper large-v3-turbo | Apple Vision |
+| macOS Intel | faster-whisper (CPU) | Apple Vision |
+| Linux / Windows + NVIDIA | faster-whisper large-v3-turbo (CUDA) | RapidOCR |
+| Linux / Windows CPU only | faster-whisper small (int8) | RapidOCR |
 
-```bash
-video-digest "https://www.bilibili.com/video/BV..." --cookies cookies.txt
-```
+## Privacy
 
----
+- Media is processed locally and deleted afterwards.
+- Only text (transcript, OCR text, title, description, danmaku stats) is sent to the LLM.
+- `watch` link enrichment calls arXiv, the GitHub API and Jina Reader. Set `fetch_links = false` to turn this off.
 
-## 📂 Output Artifacts
+## License
 
-| File | Description |
-| :--- | :--- |
-| **`summary.txt`** | A 500-word concise card (Overview, timestamped conflicts, key takeaways) |
-| **`report.md`** | Detailed long-form Markdown notes with timeline and cross-verified evidence |
-| **`contact_sheet.jpg`** | 4×4 contact sheet thumbnail of video keyframes |
-| **`transcript.srt`** | Full timestamped subtitle transcript |
-
----
-
-## 📄 License
-
-Distributed under the [MIT License](LICENSE).
+MIT

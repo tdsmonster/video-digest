@@ -1,18 +1,27 @@
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 .pytest_cache/
+.ruff_cache/
 *.egg-info/
+.venv/
 dist/
 build/
+
+# 运行产物与媒体
 digest_output/
 *.m4a
 *.mp4
-*.srt
-*.vtt
-.DS_Store
+*.mkv
+*.webm
+*.wav
+
+# 私密信息：永远不要提交
 .env
-cookies.txt
-bin/mac-vision
-src/video_digest/vision/mac-vision
+*.env
+config.toml
+*cookies*.txt
+watch_state.db
+
+# 本地编译产物
+src/video_digest/native/vision-ocr
+.DS_Store
