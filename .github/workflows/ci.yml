@@ -12,11 +12,18 @@ jobs:
         python: ["3.10", "3.12"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
-      - uses: FedericoCarboni/setup-ffmpeg@v3
+      - name: Install ffmpeg
+        shell: bash
+        run: |
+          case "$RUNNER_OS" in
+            Linux)   sudo apt-get update -q && sudo apt-get install -y -q ffmpeg ;;
+            macOS)   brew install ffmpeg ;;
+            Windows) choco install ffmpeg -y --no-progress ;;
+          esac
       - run: pip install -e ".[dev]"
       - run: pytest -q
       - name: doctor（没有 API key 时预期返回 1，只检查不崩溃）
