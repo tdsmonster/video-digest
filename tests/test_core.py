@@ -6,7 +6,7 @@ import pytest
 
 from video_digest import cli, config
 from video_digest.gates import InsufficientEvidenceError, evidence_gate, transcript_quality_gate
-from video_digest.sources import danmaku_highlights, normalize_input
+from video_digest.sources import danmaku_highlights, normalize_input, video_format_args
 from video_digest.util import fmt_ts, parse_srt, run_cmd, write_srt
 from video_digest.watch import extract_links, screen_links
 
@@ -103,3 +103,9 @@ def test_cli_config_anywhere(monkeypatch, tmp_path):
     monkeypatch.setattr(cli, "cmd_run", lambda a, cfg: seen.setdefault("model", cfg["llm"]["model"]) and 0)
     cli.main(["run", "BV16Cxp6aEGn", "--config", str(p)])
     assert seen["model"] == "from-file"
+
+
+def test_video_format_prefers_highest_up_to_cap():
+    args = video_format_args(1080)
+    assert args[args.index("-S") + 1] == "res:1080,vcodec:h264"     # 分辨率优先，h264 只做同分辨率的次序
+    assert args[args.index("-f") + 1] == "bv*+ba/b"                  # 不按编码过滤，避免错拿低分辨率

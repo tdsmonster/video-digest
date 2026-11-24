@@ -175,20 +175,32 @@ def danmaku_highlights(dm, duration, top: int = 6) -> str:
     return "\n".join(l for _, l in sorted(lines))
 
 
+def video_format_args(max_height: int) -> list[str]:
+    """按分辨率动态选：有多高取多高，但不超过 max_height（源只有 720p 就取 720p）；同分辨率优先 h264（解码最快、兼容最好）。
+
+    用 -S 排序而不是 -f 过滤：-f "bv*[vcodec^=avc][height<=1080]" 在 h264 只到 720p、而 HEVC/AV1 有 1080p 时会错拿 720p。
+    """
+    return ["-f", "bv*+ba/b", "-S", f"res:{int(max_height)},vcodec:h264"]
+
+
 def download_media(url: str, out_dir: Path, duration: float, cookies: str | None, max_height: int = 1080):
-    """返回 (video_path | None, audio_path | None)。下载 ≤max_height 的视频 + 最佳音轨，失败退回只下音频。
+    """返回 (video_path | None, audio_path | None)。下载 ≤max_height 的最高可用画质 + 最佳音轨，失败退回只下音频。
 
     画面文字识别对分辨率敏感：录屏/PPT 里的小字在 480p 下约有两成认不出来（见 README「清晰度」一节），
-    所以默认 1080p；语音转写不受影响（音轨总是取最佳）。avc 优先，解码兼容性最好。
+    所以默认上限 1080p；语音转写不受影响（音轨总是取最佳）。
     """
     h = int(max_height or 1080)
-    log(f"[2/4] 下载 ≤{h}p 视频 + 音轨...")
+    log(f"[2/4] 下载视频（最高可用画质，上限 {h}p）+ 音轨...")
     tmo = int(max(300, (duration or 0) * (0.6 + h / 1080)))
-    fmt = (f"bv*[height<={h}][vcodec^=avc]+ba/bv*[height<={h}]+ba/b[height<={h}]/bv*+ba/b")
-    cmd = ytdlp_base(url, cookies) + ["-f", fmt, "--merge-output-format", "mp4", "-o", str(out_dir / "media.%(ext)s"), url]
+    cmd = ytdlp_base(url, cookies) + video_format_args(h) + ["--merge-output-format", "mp4",
+                                                             "-o", str(out_dir / "media.%(ext)s"), url]
     _, _, err = run_cmd(cmd, timeout=tmo)
     vids = [f for f in out_dir.glob("media.*") if f.suffix in (".mp4", ".mkv", ".webm") and f.stat().st_size > 100_000]
     if vids:
+        c, out, _ = run_cmd(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,codec_name",
+                             "-of", "csv=p=0", str(vids[0])], timeout=20)
+        if c == 0 and out.strip():
+            log(f" -> 实际画质: {out.strip()}")
         return vids[0], vids[0]
     log(f" -> [警告] 视频下载失败，改为只下音频: {err.strip()[-160:]}")
     _, _, err = run_cmd(ytdlp_base(url, cookies) + ["-f", "ba/b", "-o", str(out_dir / "audio.%(ext)s"), url], timeout=tmo)
