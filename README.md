@@ -67,7 +67,7 @@ Whisper 在音乐和静音段落里常会输出「作曲 李宗盛」「谢谢�
 <td valign="top">
 
 ### 📡 订阅追更
-定时检查 B站收藏夹、UP 主或 YouTube 频道，为新视频生成摘要，并读取简介和置顶评论里 arXiv 链接的摘要、GitHub 仓库的说明。
+定时检查 B站收藏夹、UP 主或 YouTube 频道，为新视频生成摘要，并读取简介、置顶评论和画面里 arXiv 链接的摘要、GitHub / GitLab 仓库的说明。每个链接标明来源；从画面识别出的网址可能有 OCR 错字，会单独注明。
 
 </td>
 </tr>
@@ -246,7 +246,7 @@ API key 也会读取 `DEEPSEEK_API_KEY` / `OPENAI_API_KEY`。
 
 - 视频、音频、截图都在本地处理，用完即删。
 - 发给 LLM 的只有文字：字幕或转写、画面文字、标题、简介、弹幕统计。
-- `watch` 解读链接时会访问 arXiv、GitHub API 和 [Jina Reader](https://jina.ai/reader)（抓普通网页正文）。不需要的话设 `fetch_links = false`。
+- `watch` 解读链接时会访问 arXiv、GitHub API、GitLab API 和 [Jina Reader](https://jina.ai/reader)（抓普通网页正文）。不需要的话设 `fetch_links = false`。
 
 ## 🛠️ 开发
 

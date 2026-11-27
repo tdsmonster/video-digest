@@ -67,7 +67,7 @@ Handles HTTP 567, b23.tv short links, app share text, multi-part videos and AI s
 <td valign="top">
 
 ### 📡 Watch subscriptions
-Polls Bilibili favorites, uploaders or YouTube channels and summarizes new videos. For arXiv and GitHub links in the description or pinned comment, it fetches the abstract or repository README.
+Polls Bilibili favorites, uploaders or YouTube channels and summarizes new videos. For arXiv, GitHub and GitLab links in the description, pinned comment or on screen, it fetches the abstract or repository README. Each link is tagged with where it came from; URLs read from the screen by OCR may contain typos and are marked as such.
 
 </td>
 </tr>
@@ -208,7 +208,7 @@ Tested on macOS, Linux (Docker) and a real Windows laptop; CI runs on all three.
 
 - Media is processed locally and deleted afterwards.
 - Only text (transcript, OCR text, title, description, danmaku stats) is sent to the LLM.
-- `watch` link enrichment calls arXiv, the GitHub API and [Jina Reader](https://jina.ai/reader). Set `fetch_links = false` to turn this off.
+- `watch` link enrichment calls arXiv, the GitHub API, the GitLab API and [Jina Reader](https://jina.ai/reader). Set `fetch_links = false` to turn this off.
 
 ## 🛠️ Development
 
