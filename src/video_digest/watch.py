@@ -161,6 +161,21 @@ def extract_links(text: str, self_id: str) -> list[str]:
     return out[:MAX_LINKS]
 
 
+OCR_ORIGIN = "画面识别"
+
+
+def collect_links(sources: list[tuple[str, str]], self_id: str) -> list[tuple[str, str]]:
+    """按来源顺序（简介 → 置顶评论 → 画面识别）提取链接并去重，记住每个链接最先出现在哪。
+    画面识别的网址来自 OCR，可能有错字（如 google 认成 goog1e），下游要据此降低可信度。"""
+    seen, out = set(), []
+    for origin, text in sources:
+        for u in extract_links(text, self_id):
+            if u.rstrip("/") not in seen:
+                seen.add(u.rstrip("/"))
+                out.append((u, origin))
+    return out[:MAX_LINKS]
+
+
 def screen_links(ocr_txt: str) -> list[str]:
     """画面上的网址：OCR 常漏 https:// 前缀、把 github 用户名拆开，修一下。"""
     ocr_txt = re.sub(r"github\.com\s*/\s*([\w.-]+(?:\s+[\w.-]+)*?)\s*/\s*([\w.-]+)",
@@ -223,9 +238,29 @@ class LinkFetcher:
         except Exception:
             pass
         meta = (f"{owner}/{repo}：{info.get('description') or ''}\n⭐{info.get('stargazers_count')} · "
-                f"最近提交 {str(info.get('pushed_at'))[:10]} · {info.get('language') or ''} · "
+                f"创建 {str(info.get('created_at'))[:10]} · 最近提交 {str(info.get('pushed_at'))[:10]} · "
+                f"{info.get('language') or ''} · "
                 f"许可 {(info.get('license') or {}).get('spdx_id', '无')}")
         return {"kind": "GitHub", "title": f"{owner}/{repo}", "text": meta + "\nREADME 节选：\n" + readme, "extra": ""}
+
+    def gitlab(self, u):
+        m = re.match(r"https?://gitlab\.com/([\w./-]+?)(?:\.git)?/?(?:$|[?#]|/-/)", u)
+        if not m:
+            return None
+        path = urllib.parse.quote(m.group(1), safe="")
+        info = json.loads(self.http.get(f"https://gitlab.com/api/v4/projects/{path}", cookies=False))
+        readme = ""
+        if info.get("readme_url"):
+            try:
+                readme = self.http.get(f"https://gitlab.com/api/v4/projects/{path}/repository/files/"
+                                       f"{urllib.parse.quote(info['readme_url'].rsplit('/', 1)[-1])}/raw?ref="
+                                       f"{info.get('default_branch') or 'main'}", cookies=False)[:3500]
+            except Exception:
+                pass
+        meta = (f"{info.get('path_with_namespace')}：{info.get('description') or ''}\n⭐{info.get('star_count')} · "
+                f"创建 {str(info.get('created_at'))[:10]} · 最近活动 {str(info.get('last_activity_at'))[:10]}")
+        return {"kind": "GitLab", "title": info.get("path_with_namespace") or m.group(1),
+                "text": meta + "\nREADME 节选：\n" + readme, "extra": ""}
 
     def bili_video(self, u):
         m = re.search(r"(BV[0-9A-Za-z]{10})", u)
@@ -247,6 +282,7 @@ class LinkFetcher:
             return {"url": u, "kind": "未抓取", "title": u, "text": "网盘/商品/社交主页类链接，未抓取", "extra": ""}
         try:
             fn = self.arxiv if "arxiv.org" in u else self.github if "github.com" in u else \
+                self.gitlab if "gitlab.com" in u else \
                 self.bili_video if "bilibili.com/video" in u else self.web
             r = fn(u) or (self.web(u) if fn is not self.web else None)
             if r:
@@ -260,9 +296,10 @@ class LinkFetcher:
 def analyze_links(cfg, title, card, links):
     fetched = [l for l in links if l["kind"] not in ("未抓取", "抓取失败")]
     if not fetched:
-        brief = "\n".join(f"• {l['url']}（{l['kind']}）" for l in links)
+        brief = "\n".join(f"• {l['url']}（{l['kind']}；来自{l.get('origin', '?')}）" for l in links)
         return brief, brief
-    blocks = "\n\n".join(f"[{i}] 类型：{l['kind']}｜{l['title']}\nURL：{l['url']}\n{l['text']}" for i, l in enumerate(links, 1))
+    blocks = "\n\n".join(f"[{i}] 类型：{l['kind']}｜来源：{l.get('origin', '?')}｜{l['title']}\nURL：{l['url']}\n{l['text']}"
+                         for i, l in enumerate(links, 1))
     raw = llm.chat(cfg, prompts.links_prompt(title, card, blocks), 12000)
     b = re.search(r"<<<BRIEF>>>([\s\S]*?)<<<END_BRIEF>>>", raw)
     d = re.search(r"<<<DETAIL>>>([\s\S]*?)(?:<<<END_DETAIL>>>|$)", raw)
@@ -301,9 +338,10 @@ def process_item(cfg, http: Http, item: dict, label: str, mode: str, config_path
         pinned = bili_pinned_comment(http, item["id"]) if is_bili else ""
         ocr_file = work / "ocr.txt"
         screen = screen_links(ocr_file.read_text(encoding="utf-8")) if ocr_file.exists() else []
-        src_text = (meta.get("description") or "") + "\n" + pinned + "\n" + "\n".join(screen)
         fetcher = LinkFetcher(http, w.get("papers_dir") or "")
-        links = [fetcher.fetch(u) for u in extract_links(src_text, item["id"])]
+        links = [dict(fetcher.fetch(u), origin=o) for u, o in collect_links(
+            [("简介", meta.get("description") or ""), ("置顶评论", pinned), (OCR_ORIGIN, "\n".join(screen))],
+            item["id"])]
         if links:
             log(f"  链接 {len(links)} 个：" + ", ".join(l["kind"] for l in links))
             try:
@@ -330,11 +368,12 @@ def process_item(cfg, http: Http, item: dict, label: str, mode: str, config_path
 
 {report}
 
-## 简介与置顶评论中的链接
+## 简介 / 置顶评论 / 画面中的链接
 {link_detail or "（无链接）"}
 
 ### 原始链接
-{chr(10).join(f"- [{l['kind']}] {l['title']} — {l['url']}" for l in links) or "（无）"}
+{chr(10).join(f"- [{l['kind']}｜{l.get('origin', '?')}] {l['title']} — {l['url']}" for l in links) or "（无）"}
+{"（标「画面识别」的网址由 OCR 从画面读出，可能有错字，不是作者给的链接）" if any(l.get('origin') == OCR_ORIGIN for l in links) else ""}
 
 ### 置顶评论原文
 {pinned or "（无置顶评论 / 非 B站）"}

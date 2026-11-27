@@ -109,3 +109,18 @@ def test_video_format_prefers_highest_up_to_cap():
     args = video_format_args(1080)
     assert args[args.index("-S") + 1] == "res:1080,vcodec:h264"     # 分辨率优先，h264 只做同分辨率的次序
     assert args[args.index("-f") + 1] == "bv*+ba/b"                  # 不按编码过滤，避免错拿低分辨率
+
+
+def test_collect_links_keeps_origin_and_dedups():
+    from video_digest.watch import collect_links, OCR_ORIGIN
+    got = collect_links([("简介", "源码 https://gitlab.com/a/b"),
+                         ("置顶评论", ""),
+                         (OCR_ORIGIN, "https://gitlab.com/a/b\nhttps://workspace.goog1e.com/products/drive/")], "BV1xxxxxxxxx")
+    assert got == [("https://gitlab.com/a/b", "简介"),
+                   ("https://workspace.goog1e.com/products/drive/", OCR_ORIGIN)]
+
+
+def test_prompts_carry_today():
+    from datetime import date
+    from video_digest import prompts
+    assert str(date.today()) in prompts.links_prompt("t", "c", "b")

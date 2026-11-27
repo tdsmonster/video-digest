@@ -1,6 +1,15 @@
 """提示词。输出语言由 output.language 决定，提示词本身用中文写。"""
 
+from datetime import date
+
 LANG_NAMES = {"zh": "简体中文", "zh-hant": "繁體中文", "en": "English", "ja": "日本語", "ko": "한국어"}
+
+
+def date_note() -> str:
+    t = date.today()
+    return (f"今天是 {t:%Y-%m-%d}。不晚于今天的日期都已经发生过，例如 arXiv 编号 {t:%y%m}.xxxxx 表示 {t.year} 年 {t.month} 月；"
+            f"会议常按下一年命名（{t.year} 年下半年投稿 ICLR {t.year + 1} 属正常）。"
+            "不要因为年份、届次、编号、模型版本晚于你的训练数据就称其为“未来”“口误”“虚构”或列为存疑点。")
 
 
 def lang_name(code: str) -> str:
@@ -16,6 +25,7 @@ def digest_prompt(*, meta, dur_str, sources, weak, t_note, chapters, t_text, ocr
     weak_note = ("注意：本视频没有可靠的人声台词（" + t_note + "），内容只能依据画面文字、标题、简介和弹幕推断；"
                  "请在开头说明这一点，降低结论确定性，不要把歌词当成对白。") if weak else ""
     return f"""你在帮用户快速了解一个视频。只根据下面提供的材料写，材料里没有的内容不要编；不确定的地方标注"（推测）"。
+{date_note()}
 先判断视频类型（教程/讲解、新闻评论、访谈、Vlog、游戏展示、音乐MV、广告等），按类型决定重点。
 输出语言：{lang_name(language)}（标记行原样保留）。
 {weak_note}
@@ -56,6 +66,11 @@ def digest_prompt(*, meta, dur_str, sources, weak, t_note, chapters, t_text, ocr
 
 def links_prompt(title: str, card: str, blocks: str) -> str:
     return f"""下面是视频《{title}》的摘要，以及作者在简介/置顶评论/画面里给出的链接及其内容。只依据给出的材料，不要编。
+{date_note()}
+每个链接标了来源：「简介」「置顶评论」是作者给的；「画面识别」是 OCR 从视频画面读出的网址，可能有错字（如 l 认成 1、o 认成 0），
+画面识别的链接抓取失败时只说明“画面识别的网址，可能是 OCR 错字”，不要据此推断仿冒、钓鱼等。
+如果链接是需要用户授权账号或填写令牌/密钥的工具（MCP 插件、浏览器扩展、自动登录脚本等），在“值不值得点开”里写明作者、仓库创建时间，
+并提醒“需授权账号，安装前先看代码”；只陈述材料里的事实，不要凭空判定安全或不安全。
 
 【视频摘要】
 {card[:2500]}
